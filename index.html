@@ -20,18 +20,123 @@
                     colors: {
                         'apple-gray': '#f5f5f7',
                         'apple-blue': '#2997ff',
+                    },
+                    animation: {
+                        'gradient': 'gradient 8s linear infinite',
+                    },
+                    keyframes: {
+                        gradient: {
+                            '0%, 100%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'left center'
+                            },
+                            '50%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'right center'
+                            }
+                        }
                     }
                 },
             },
         }
     </script>
+    <style>
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            background: #f8fafc;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .custom-bg {
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .custom-bg::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            z-index: 0;
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            position: fixed;
+            z-index: 2;
+        }
+
+        .logo-invert {
+            filter: invert(1) brightness(0.6);
+        }
+
+        .card-hover:hover {
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.15);
+            transform: translateY(-8px);
+        }
+
+        .icon-gradient-blue {
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+        }
+
+        .icon-gradient-purple {
+            background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+        }
+
+        .icon-gradient-green {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+        }
+
+        .icon-gradient-orange {
+            background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+        }
+
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+            z-index: 1;
+        }
+
+        .stat-card:hover::before {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
+        }
+    </style>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
-<body class="bg-apple-gray">
+<body class="custom-bg">
+    <canvas id="nokey"></canvas>
     <!-- Header -->
-    <header class="bg-white/80 backdrop-blur-md fixed w-full top-0 z-10 border-b border-gray-200">
+    <header class="glass-effect fixed w-full top-0 z-10 border-b border-gray-200/20">
         <div class="max-w-7xl mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
                 <div class="flex items-center">
@@ -40,19 +145,19 @@
                 </div>
                 <div class="relative group">
                     <button
-                        class="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200">
+                        class="flex items-center space-x-2 text-gray-700 hover:text-gray-900 transition-all duration-300">
                         <span>Dr. Juan Pérez</span>
                         <i
-                            class="fas fa-chevron-down text-xs transition-transform duration-200 group-hover:rotate-180"></i>
+                            class="fas fa-chevron-down text-xs transition-transform duration-300 group-hover:rotate-180"></i>
                     </button>
                     <div
-                        class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 transform origin-top scale-95 group-hover:scale-100">
+                        class="absolute right-0 mt-2 w-48 glass-effect rounded-xl shadow-lg py-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-300 transform origin-top scale-95 group-hover:scale-100">
                         <a href="#"
-                            class="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-apple-blue transition-colors duration-200">
+                            class="block px-4 py-2 text-gray-700 hover:bg-blue-50/50 hover:text-blue-600 transition-colors duration-300">
                             <i class="fas fa-user-circle mr-2"></i>Ver Perfil
                         </a>
                         <a href="#"
-                            class="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-apple-blue transition-colors duration-200">
+                            class="block px-4 py-2 text-gray-700 hover:bg-blue-50/50 hover:text-blue-600 transition-colors duration-300">
                             <i class="fas fa-sign-out-alt mr-2"></i>Salir del Sistema
                         </a>
                     </div>
@@ -65,22 +170,22 @@
     <main class="mt-24 max-w-7xl mx-auto px-4 py-6">
         <!-- Dashboard -->
         <section class="mb-12">
-            <h2 class="text-4xl font-light mb-2 text-center text-gray-800">Bienvenido al Sistema</h2>
+            <h2 class="text-5xl font-light mb-2 text-center text-gray-800">Bienvenido al Sistema</h2>
             <p class="text-gray-500 text-center mb-12 text-lg">Gestione su práctica médica de manera eficiente</p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <!-- Pacientes -->
                 <a href="pacientes.html" class="group">
                     <div
-                        class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-1 relative overflow-hidden">
+                        class="glass-effect rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 relative overflow-hidden card-hover">
                         <div
-                            class="bg-gradient-to-br from-blue-500 to-blue-600 w-16 h-16 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300">
+                            class="icon-gradient-blue w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-500 shadow-lg">
                             <i class="fas fa-user-friends text-2xl text-white"></i>
                         </div>
                         <h3 class="font-semibold text-xl text-gray-800 mb-2">Lista de Pacientes</h3>
-                        <p class="text-gray-600 text-sm mb-4">Gestione sus pacientes y horarios de atención</p>
+                        <p class="text-gray-500 text-sm mb-4">Gestione sus pacientes y horarios de atención</p>
                         <div
-                            class="flex items-center text-apple-blue group-hover:translate-x-2 transition duration-300">
+                            class="flex items-center text-blue-600 group-hover:translate-x-2 transition-all duration-500">
                             <span class="mr-2 text-sm font-medium">Acceder</span>
                             <i class="fas fa-arrow-right text-sm"></i>
                         </div>
@@ -90,15 +195,15 @@
                 <!-- Agenda -->
                 <a href="agenda.html" class="group">
                     <div
-                        class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-1 relative overflow-hidden">
+                        class="glass-effect rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 relative overflow-hidden card-hover">
                         <div
-                            class="bg-gradient-to-br from-indigo-500 to-indigo-600 w-16 h-16 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300">
+                            class="icon-gradient-purple w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-500 shadow-lg">
                             <i class="fas fa-calendar-alt text-2xl text-white"></i>
                         </div>
                         <h3 class="font-semibold text-xl text-gray-800 mb-2">Agenda Médica</h3>
-                        <p class="text-gray-600 text-sm mb-4">Gestione citas y disponibilidad de médicos</p>
+                        <p class="text-gray-500 text-sm mb-4">Gestione citas y disponibilidad de médicos</p>
                         <div
-                            class="flex items-center text-apple-blue group-hover:translate-x-2 transition duration-300">
+                            class="flex items-center text-indigo-600 group-hover:translate-x-2 transition-all duration-500">
                             <span class="mr-2 text-sm font-medium">Acceder</span>
                             <i class="fas fa-arrow-right text-sm"></i>
                         </div>
@@ -108,15 +213,15 @@
                 <!-- Productividad -->
                 <a href="productividad.html" class="group">
                     <div
-                        class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-1 relative overflow-hidden">
+                        class="glass-effect rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 relative overflow-hidden card-hover">
                         <div
-                            class="bg-gradient-to-br from-green-500 to-green-600 w-16 h-16 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300">
+                            class="icon-gradient-green w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-500 shadow-lg">
                             <i class="fas fa-chart-line text-2xl text-white"></i>
                         </div>
                         <h3 class="font-semibold text-xl text-gray-800 mb-2">Productividad</h3>
-                        <p class="text-gray-600 text-sm mb-4">Analice su rendimiento y estadísticas</p>
+                        <p class="text-gray-500 text-sm mb-4">Analice su rendimiento y estadísticas</p>
                         <div
-                            class="flex items-center text-apple-blue group-hover:translate-x-2 transition duration-300">
+                            class="flex items-center text-emerald-600 group-hover:translate-x-2 transition-all duration-500">
                             <span class="mr-2 text-sm font-medium">Acceder</span>
                             <i class="fas fa-arrow-right text-sm"></i>
                         </div>
@@ -126,15 +231,15 @@
                 <!-- Buscador -->
                 <a href="buscador.html" class="group">
                     <div
-                        class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-1 relative overflow-hidden">
+                        class="glass-effect rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 relative overflow-hidden card-hover">
                         <div
-                            class="bg-gradient-to-br from-purple-500 to-purple-600 w-16 h-16 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300">
+                            class="icon-gradient-orange w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-500 shadow-lg">
                             <i class="fas fa-search text-2xl text-white"></i>
                         </div>
                         <h3 class="font-semibold text-xl text-gray-800 mb-2">Buscador Avanzado</h3>
-                        <p class="text-gray-600 text-sm mb-4">Búsqueda detallada de historiales médicos</p>
+                        <p class="text-gray-500 text-sm mb-4">Búsqueda detallada de historiales médicos</p>
                         <div
-                            class="flex items-center text-apple-blue group-hover:translate-x-2 transition duration-300">
+                            class="flex items-center text-orange-600 group-hover:translate-x-2 transition-all duration-500">
                             <span class="mr-2 text-sm font-medium">Acceder</span>
                             <i class="fas fa-arrow-right text-sm"></i>
                         </div>
@@ -144,39 +249,44 @@
 
             <!-- Stats Overview -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-12">
-                <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-md">
+                <div
+                    class="glass-effect rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 stat-card">
                     <div class="flex items-center justify-between">
-                        <span class="text-gray-500">Pacientes Hoy</span>
+                        <span class="text-gray-600">Pacientes Hoy</span>
                         <i class="fas fa-user-clock text-blue-500"></i>
                     </div>
-                    <p class="text-2xl font-semibold mt-2">12</p>
+                    <p class="text-3xl font-light mt-2 text-gray-800">12</p>
                 </div>
-                <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-md">
+                <div
+                    class="glass-effect rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 stat-card">
                     <div class="flex items-center justify-between">
-                        <span class="text-gray-500">Tiempo Promedio</span>
-                        <i class="fas fa-clock text-green-500"></i>
+                        <span class="text-gray-600">Tiempo Promedio</span>
+                        <i class="fas fa-clock text-indigo-500"></i>
                     </div>
-                    <p class="text-2xl font-semibold mt-2">25 min</p>
+                    <p class="text-3xl font-light mt-2 text-gray-800">25 min</p>
                 </div>
-                <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-md">
+                <div
+                    class="glass-effect rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 stat-card">
                     <div class="flex items-center justify-between">
-                        <span class="text-gray-500">Eficiencia</span>
-                        <i class="fas fa-chart-pie text-purple-500"></i>
+                        <span class="text-gray-600">Eficiencia</span>
+                        <i class="fas fa-chart-pie text-emerald-500"></i>
                     </div>
-                    <p class="text-2xl font-semibold mt-2">94%</p>
+                    <p class="text-3xl font-light mt-2 text-gray-800">94%</p>
                 </div>
-                <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-md">
+                <div
+                    class="glass-effect rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 stat-card">
                     <div class="flex items-center justify-between">
-                        <span class="text-gray-500">Satisfacción</span>
-                        <i class="fas fa-smile text-yellow-500"></i>
+                        <span class="text-gray-600">Satisfacción</span>
+                        <i class="fas fa-smile text-orange-500"></i>
                     </div>
-                    <p class="text-2xl font-semibold mt-2">4.8/5</p>
+                    <p class="text-3xl font-light mt-2 text-gray-800">4.8/5</p>
                 </div>
             </div>
         </section>
     </main>
 
     <script src="script.js"></script>
+    <script src="canvas.js"></script>
 </body>
 
 </html>
