@@ -38,6 +38,90 @@
             position: relative;
             z-index: 1;
         }
+
+        /* Nuevos estilos para mejorar la experiencia visual */
+        .clinical-card {
+            transition: all 0.3s ease;
+        }
+
+        .clinical-card:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .section-icon {
+            transition: all 0.3s ease;
+        }
+
+        .clinical-card:hover .section-icon {
+            transform: scale(1.1);
+        }
+
+        textarea {
+            transition: all 0.2s ease;
+            resize: none;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        textarea:focus {
+            box-shadow: 0 4px 12px rgba(41, 151, 255, 0.1);
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            transition: all 0.2s ease;
+        }
+
+        .tag:hover {
+            transform: translateX(2px);
+        }
+
+        /* Animaciones para los elementos de la lista */
+        .list-item {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Estilos personalizados para el scrollbar */
+        .overflow-y-auto {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(203, 213, 225, 0.4) transparent;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-thumb {
+            background-color: rgba(203, 213, 225, 0.4);
+            border-radius: 20px;
+            border: transparent;
+        }
+
+        .overflow-y-auto:hover::-webkit-scrollbar-thumb {
+            background-color: rgba(203, 213, 225, 0.8);
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -57,9 +141,20 @@
                         <h1 class="text-2xl font-light text-gray-800">Registro Clínico</h1>
                     </div>
                     <div class="flex items-center space-x-4">
+                        <button id="verHistorial"
+                            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm flex items-center space-x-2">
+                            <i class="fas fa-history"></i>
+                            <span>Log</span>
+                        </button>
+                        <button id="imprimirFicha"
+                            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm flex items-center space-x-2">
+                            <i class="fas fa-print"></i>
+                            <span>Imprimir</span>
+                        </button>
                         <button id="guardarRegistro"
-                            class="px-4 py-2 bg-apple-blue text-white rounded-lg hover:bg-blue-600 transition-colors text-sm">
-                            <i class="fas fa-save mr-2"></i>Guardar Registro
+                            class="px-4 py-2 bg-apple-blue text-white rounded-lg hover:bg-blue-600 transition-colors text-sm flex items-center space-x-2">
+                            <i class="fas fa-save"></i>
+                            <span>Guardar</span>
                         </button>
                     </div>
                 </div>
@@ -89,65 +184,82 @@
                 <!-- Columna 1: Anamnesis y Diagnóstico -->
                 <div class="grid grid-rows-2 gap-6 h-[calc(100vh-12rem)]">
                     <!-- Anamnesis -->
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full">
+                    <div
+                        class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all">
                         <div class="flex items-center mb-4">
                             <div class="flex items-center space-x-2">
-                                <div class="p-2 bg-blue-50 rounded-lg">
+                                <div class="p-2 bg-gray-50 rounded-lg">
                                     <i class="fas fa-comments text-blue-500"></i>
                                 </div>
-                                <h3 class="font-medium text-gray-700">Anamnesis</h3>
+                                <h3 class="font-medium text-blue-500">Anamnesis</h3>
                             </div>
                         </div>
                         <textarea id="anamnesis"
-                            class="w-full h-[calc(100%-4rem)] p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-apple-blue focus:border-apple-blue resize-none"
+                            class="w-full h-[calc(100%-4rem)] p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 resize-none bg-gray-50/30"
                             placeholder="Registre la anamnesis del paciente..."></textarea>
                     </div>
 
                     <!-- Diagnóstico -->
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full">
-                        <div class="flex items-center mb-4">
+                    <div
+                        class="clinical-card bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all">
+                        <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center space-x-2">
-                                <div class="p-2 bg-red-50 rounded-lg">
-                                    <i class="fas fa-notes-medical text-red-500"></i>
+                                <div class="p-2 bg-gray-50 rounded-lg">
+                                    <i class="fas fa-file-medical text-red-500"></i>
                                 </div>
-                                <h3 class="font-medium text-gray-700">Diagnóstico</h3>
+                                <h3 class="font-medium text-red-500">Diagnóstico</h3>
+                            </div>
+                            <button
+                                class="w-8 h-8 flex items-center justify-center bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-all"
+                                id="agregarCIE10" title="Agregar Diagnóstico">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <div class="h-[calc(100%-12rem)] overflow-y-auto mb-3 pr-1">
+                            <div class="space-y-2" id="listaCIE10">
+                                <div class="flex items-center space-x-2 text-gray-500 py-2" id="estadoInicial">
+                                    <i class="fas fa-tag text-gray-400"></i>
+                                    <span class="text-sm">No hay diagnósticos agregados</span>
+                                </div>
                             </div>
                         </div>
                         <textarea id="diagnostico"
-                            class="w-full h-[calc(100%-4rem)] p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-apple-blue focus:border-apple-blue resize-none"
-                            placeholder="Registre el diagnóstico del paciente..."></textarea>
+                            class="w-full h-24 p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-gray-600 text-sm bg-gray-50/30"
+                            placeholder="Observaciones adicionales del diagnóstico..."></textarea>
                     </div>
                 </div>
 
                 <!-- Columna 2: Examen Físico e Indicaciones -->
                 <div class="grid grid-rows-2 gap-6 h-[calc(100vh-12rem)]">
                     <!-- Examen Físico -->
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full">
+                    <div
+                        class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all">
                         <div class="flex items-center mb-4">
                             <div class="flex items-center space-x-2">
-                                <div class="p-2 bg-green-50 rounded-lg">
+                                <div class="p-2 bg-gray-50 rounded-lg">
                                     <i class="fas fa-stethoscope text-green-500"></i>
                                 </div>
-                                <h3 class="font-medium text-gray-700">Examen Físico</h3>
+                                <h3 class="font-medium text-green-500">Examen Físico</h3>
                             </div>
                         </div>
                         <textarea id="examenFisico"
-                            class="w-full h-[calc(100%-4rem)] p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-apple-blue focus:border-apple-blue resize-none"
+                            class="w-full h-[calc(100%-4rem)] p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 resize-none bg-gray-50/30"
                             placeholder="Registre el examen físico del paciente..."></textarea>
                     </div>
 
                     <!-- Indicaciones -->
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full">
+                    <div
+                        class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all">
                         <div class="flex items-center mb-4">
                             <div class="flex items-center space-x-2">
-                                <div class="p-2 bg-yellow-50 rounded-lg">
+                                <div class="p-2 bg-gray-50 rounded-lg">
                                     <i class="fas fa-list-ul text-yellow-500"></i>
                                 </div>
-                                <h3 class="font-medium text-gray-700">Indicaciones</h3>
+                                <h3 class="font-medium text-yellow-500">Indicaciones</h3>
                             </div>
                         </div>
                         <textarea id="indicaciones"
-                            class="w-full h-[calc(100%-4rem)] p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-apple-blue focus:border-apple-blue resize-none"
+                            class="w-full h-[calc(100%-4rem)] p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 resize-none bg-gray-50/30"
                             placeholder="Registre las indicaciones para el paciente..."></textarea>
                     </div>
                 </div>
@@ -155,46 +267,54 @@
                 <!-- Columna 3: Exámenes y Receta -->
                 <div class="grid grid-rows-2 gap-6 h-[calc(100vh-12rem)]">
                     <!-- Exámenes/Imágenes -->
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full">
+                    <div
+                        class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all">
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center space-x-2">
-                                <div class="p-2 bg-purple-50 rounded-lg">
-                                    <i class="fas fa-flask text-purple-500"></i>
+                                <div class="p-2 bg-gray-50 rounded-lg">
+                                    <i class="fas fa-microscope text-purple-500"></i>
                                 </div>
-                                <h3 class="font-medium text-gray-700">Exámenes/Imágenes</h3>
+                                <h3 class="font-medium text-purple-500">Exámenes</h3>
                             </div>
-                            <button class="text-apple-blue hover:text-blue-600 text-sm" id="solicitarExamen">
-                                <i class="fas fa-plus mr-1"></i>Solicitar Examen
+                            <button id="solicitarExamen"
+                                class="w-8 h-8 flex items-center justify-center bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-all"
+                                title="Solicitar Examen">
+                                <i class="fas fa-plus"></i>
                             </button>
                         </div>
-                        <div class="h-[calc(100%-8rem)] overflow-y-auto">
+                        <div class="h-[calc(100%-12rem)] overflow-y-auto mb-3 pr-1">
                             <div class="space-y-2" id="listaExamenes">
-                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                    <div class="flex items-center space-x-3">
-                                        <i class="fas fa-file-medical text-gray-400"></i>
-                                        <span class="text-sm text-gray-600">No hay exámenes solicitados</span>
-                                    </div>
+                                <div class="flex items-center space-x-2 text-gray-500 py-2" id="estadoInicialExamenes">
+                                    <i class="fas fa-flask text-gray-400"></i>
+                                    <span class="text-sm">No hay exámenes solicitados</span>
                                 </div>
                             </div>
                         </div>
+                        <textarea id="observacionesExamenes"
+                            class="w-full h-24 p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-gray-600 text-sm bg-gray-50/30"
+                            placeholder="Observaciones adicionales de los exámenes..."></textarea>
                     </div>
 
                     <!-- Receta -->
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full">
+                    <div
+                        class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all">
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center space-x-2">
-                                <div class="p-2 bg-emerald-50 rounded-lg">
+                                <div class="p-2 bg-gray-50 rounded-lg">
                                     <i class="fas fa-prescription text-emerald-500"></i>
                                 </div>
-                                <h3 class="font-medium text-gray-700">Receta</h3>
+                                <h3 class="font-medium text-emerald-500">Receta</h3>
                             </div>
-                            <button class="text-apple-blue hover:text-blue-600 text-sm" id="agregarMedicamento">
-                                <i class="fas fa-plus mr-1"></i>Agregar Medicamento
+                            <button
+                                class="w-8 h-8 flex items-center justify-center bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-all"
+                                id="agregarMedicamento" title="Agregar Medicamento">
+                                <i class="fas fa-plus"></i>
                             </button>
                         </div>
                         <div class="h-[calc(100%-8rem)] overflow-y-auto">
                             <div class="space-y-2" id="listaMedicamentos">
-                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                                    id="estadoInicialMedicamentos">
                                     <div class="flex items-center space-x-3">
                                         <i class="fas fa-pills text-gray-400"></i>
                                         <span class="text-sm text-gray-600">No hay medicamentos recetados</span>
@@ -206,6 +326,276 @@
                 </div>
             </div>
         </main>
+    </div>
+
+    <!-- Modal para CIE-10 -->
+    <div id="modalCIE10" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl mx-4 modal-enter">
+            <!-- Header del Modal -->
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-file-medical text-blue-500 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">Agregar Diagnóstico</h3>
+                    </div>
+                    <button id="cerrarModalCIE10"
+                        class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-times text-gray-400 hover:text-gray-600"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <!-- Búsqueda CIE-10 -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-search text-gray-400 mr-2"></i>
+                        Buscar Código CIE-10
+                    </label>
+                    <div class="relative">
+                        <input type="text" id="buscarCIE10"
+                            class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow"
+                            placeholder="Buscar por código o descripción...">
+                        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                </div>
+
+                <!-- Resultados de búsqueda -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-sm font-medium text-gray-700">Resultados</h4>
+                        <span class="text-xs text-gray-500">Haga clic en un resultado para agregarlo</span>
+                    </div>
+                    <div class="max-h-64 overflow-y-auto border border-gray-200 rounded-xl">
+                        <div id="resultadosCIE10" class="divide-y divide-gray-200">
+                            <!-- Los resultados se agregarán dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Diagnóstico libre -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-pen text-gray-400 mr-2"></i>
+                        Diagnóstico Libre
+                        <span class="text-sm font-normal text-gray-500 ml-1">(opcional)</span>
+                    </label>
+                    <textarea id="diagnosticoLibre"
+                        class="w-full h-24 p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow text-sm"
+                        placeholder="Escriba un diagnóstico personalizado si no encuentra el código CIE-10 apropiado..."></textarea>
+                </div>
+            </div>
+
+            <!-- Footer del Modal -->
+            <div class="p-6 border-t border-gray-200 flex justify-end space-x-3">
+                <button id="cancelarDiagnostico"
+                    class="px-6 py-2.5 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors text-sm font-medium">
+                    Cancelar
+                </button>
+                <button id="agregarDiagnostico"
+                    class="px-6 py-2.5 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors text-sm font-medium inline-flex items-center">
+                    <i class="fas fa-plus mr-2"></i>
+                    Agregar Diagnóstico
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Exámenes -->
+    <div id="modalExamenes"
+        class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[80vh] flex flex-col">
+            <!-- Header del modal -->
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2 bg-purple-50 rounded-lg">
+                            <i class="fas fa-microscope text-purple-500"></i>
+                        </div>
+                        <h3 class="text-xl font-medium text-gray-800">Solicitar Exámenes</h3>
+                    </div>
+                    <button id="cerrarModalExamenes" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <!-- Barra de búsqueda -->
+                <div class="mt-4 relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                    <input type="text" id="buscarExamen"
+                        class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                        placeholder="Buscar exámenes...">
+                </div>
+            </div>
+
+            <!-- Contenido del modal -->
+            <div class="flex-1 overflow-hidden">
+                <div class="h-full flex">
+                    <!-- Sidebar con categorías -->
+                    <div class="w-64 border-r border-gray-200 p-4 overflow-y-auto">
+                        <div class="space-y-1" id="categoriasExamenes">
+                            <button
+                                class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-purple-700 bg-purple-50 hover:bg-purple-100 transition-colors">
+                                Laboratorio
+                            </button>
+                            <button
+                                class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+                                Imagenología
+                            </button>
+                            <button
+                                class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+                                Cardiología
+                            </button>
+                            <button
+                                class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+                                Neurología
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Lista de exámenes -->
+                    <div class="flex-1 flex flex-col">
+                        <div class="flex-1 p-4 overflow-y-auto" id="listaExamenesDisponibles">
+                            <!-- Los exámenes se cargarán aquí -->
+                        </div>
+
+                        <!-- Panel de exámenes seleccionados -->
+                        <div class="border-t border-gray-200">
+                            <div class="p-4">
+                                <div class="mb-2">
+                                    <h4 class="text-sm font-medium text-gray-700 mb-2">Exámenes seleccionados</h4>
+                                    <p class="text-xs text-gray-500" id="contadorExamenes">0 exámenes seleccionados</p>
+                                </div>
+                                <div class="space-y-2 max-h-32 overflow-y-auto mb-3" id="examenesSeleccionados">
+                                    <!-- Los exámenes seleccionados se mostrarán aquí -->
+                                </div>
+                                <textarea id="observacionesExamen"
+                                    class="w-full p-2 border border-gray-200 rounded-lg text-sm mb-3" rows="2"
+                                    placeholder="Observaciones adicionales..."></textarea>
+                                <div class="flex justify-end space-x-3">
+                                    <button id="cancelarExamenes"
+                                        class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors text-sm">
+                                        Cancelar
+                                    </button>
+                                    <button id="agregarExamenes"
+                                        class="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors text-sm">
+                                        Agregar Exámenes
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Recetas -->
+    <div id="modalRecetas"
+        class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[80vh] flex flex-col">
+            <!-- Header del modal -->
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2 bg-emerald-50 rounded-lg">
+                            <i class="fas fa-prescription text-emerald-500"></i>
+                        </div>
+                        <h3 class="text-xl font-medium text-gray-800">Agregar Medicamento</h3>
+                    </div>
+                    <button id="cerrarModalRecetas" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <!-- Barra de búsqueda -->
+                <div class="mt-4 relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                    <input type="text" id="buscarMedicamento"
+                        class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        placeholder="Buscar medicamentos...">
+                </div>
+            </div>
+
+            <!-- Contenido del modal -->
+            <div class="flex-1 overflow-hidden">
+                <div class="h-full flex">
+                    <!-- Sidebar con categorías -->
+                    <div class="w-64 border-r border-gray-200 p-4 overflow-y-auto">
+                        <div class="space-y-1" id="categoriasMedicamentos">
+                            <button
+                                class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-colors">
+                                Analgésicos
+                            </button>
+                            <button
+                                class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+                                Antibióticos
+                            </button>
+                            <button
+                                class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+                                Antiinflamatorios
+                            </button>
+                            <button
+                                class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+                                Antialérgicos
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Lista de medicamentos -->
+                    <div class="flex-1 flex flex-col">
+                        <div class="flex-1 p-4 overflow-y-auto" id="listaMedicamentosDisponibles">
+                            <!-- Los medicamentos se cargarán aquí -->
+                        </div>
+
+                        <!-- Panel de medicamentos seleccionados -->
+                        <div class="border-t border-gray-200">
+                            <div class="p-4">
+                                <div class="mb-2">
+                                    <h4 class="text-sm font-medium text-gray-700 mb-2">Medicamentos seleccionados</h4>
+                                    <p class="text-xs text-gray-500" id="contadorMedicamentos">0 medicamentos
+                                        seleccionados</p>
+                                </div>
+                                <div class="space-y-2 max-h-32 overflow-y-auto mb-3" id="medicamentosSeleccionados">
+                                    <!-- Los medicamentos seleccionados se mostrarán aquí -->
+                                </div>
+                                <div class="grid grid-cols-2 gap-3 mb-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Dosis</label>
+                                        <input type="text" id="dosisMedicamento"
+                                            class="w-full p-2 border border-gray-200 rounded-lg text-sm"
+                                            placeholder="Ej: 1 tableta cada 8 horas">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Duración</label>
+                                        <input type="text" id="duracionMedicamento"
+                                            class="w-full p-2 border border-gray-200 rounded-lg text-sm"
+                                            placeholder="Ej: Por 7 días">
+                                    </div>
+                                </div>
+                                <textarea id="indicacionesMedicamento"
+                                    class="w-full p-2 border border-gray-200 rounded-lg text-sm mb-3" rows="2"
+                                    placeholder="Indicaciones adicionales..."></textarea>
+                                <div class="flex justify-end space-x-3">
+                                    <button id="cancelarRecetas"
+                                        class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors text-sm">
+                                        Cancelar
+                                    </button>
+                                    <button id="agregarRecetas"
+                                        class="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors text-sm">
+                                        Agregar Medicamentos
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="registro-clinico.js"></script>
