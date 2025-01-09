@@ -1,0 +1,73 @@
+body {
+    font-family: 'Nunito', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Invertir colores del logo */
+.logo-invert {
+    filter: invert(1);
+}
+
+/* Estilos para el menú desplegable */
+.group:hover .group-hover\:rotate-180 {
+    transform: rotate(180deg);
+}
+
+.group:hover .group-hover\:visible {
+    visibility: visible;
+}
+
+.group:hover .group-hover\:scale-100 {
+    transform: scale(1);
+}
+
+.group:hover .group-hover\:opacity-100 {
+    opacity: 1;
+}
+
+.tab-btn {
+    color: #6B7280;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s;
+}
+
+.tab-btn:hover {
+    color: #1F2937;
+}
+
+.tab-btn.active {
+    color: #2563EB;
+    border-bottom-color: #2563EB;
+}
+
+.patient-card {
+    transition: all 0.3s;
+}
+
+.patient-card:hover {
+    transform: translateX(4px);
+    background-color: #F3F4F6;
+}
+
+.bg-yellow-100 {
+    background-color: #FEFCE8; /* Color de fondo amarillo claro */
+}
+
+.shadow-md {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hover\:shadow-xl:hover {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos adicionales para un diseño más moderno */
+input {
+    transition: border-color 0.3s;
+}
+
+input:focus {
+    border-color: #2563EB;
+    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.5);
+} 

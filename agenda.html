@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda Médica - Sistema Clínico</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: #f5f5f7;
+        }
+
+        .calendar-day {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 4px;
+            margin: 1px;
+            font-size: 14px;
+        }
+
+        .calendar-day:hover:not(.disabled) {
+            background-color: #e5e7eb;
+        }
+
+        .calendar-day.selected {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .calendar-day.disabled {
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .calendar-day.today {
+            border: 2px solid #2563eb;
+            font-weight: bold;
+        }
+
+        .hora-disponible {
+            padding: 8px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            cursor: pointer;
+        }
+
+        .hora-disponible:hover {
+            background-color: #f3f4f6;
+        }
+
+        .hora-ocupada {
+            background-color: #f3f4f6;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header fijo -->
+    <header class="bg-white/80 backdrop-blur-md fixed w-full top-0 z-10 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="text-gray-600 hover:text-gray-800 transition">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </a>
+                    <h1 class="text-2xl font-light text-gray-800">Agenda Médica</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-600">Dr. Juan Pérez</span>
+                    <button id="exportBtn"
+                        class="px-4 py-2 bg-apple-blue text-white rounded-full hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105 text-sm font-medium">
+                        Exportar datos
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content con padding-top para compensar el header fijo -->
+    <main class="pt-20">
+        <div class="max-w-7xl mx-auto p-4">
+            <!-- Encabezado -->
+            <div class="bg-white rounded-lg shadow p-6 mb-6">
+                <h2 class="text-xl font-bold mb-6">RESERVAR UNA HORA</h2>
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Medio atención</label>
+                        <select id="medioAtencion" class="w-full border rounded p-2 text-sm">
+                            <option>Presencial/Telemedicina</option>
+                            <option>Presencial</option>
+                            <option>Telemedicina</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Sucursal</label>
+                        <select id="sucursal" class="w-full border rounded p-2 text-sm">
+                            <option>Clínica Puerto Varas</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Especialidad</label>
+                        <select id="especialidad" class="w-full border rounded p-2 text-sm">
+                            <option>-- Seleccionar --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Profesional</label>
+                        <select id="profesional" class="w-full border rounded p-2 text-sm">
+                            <option>PINUER GONZALEZ CLAUDIO</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Box de atención</label>
+                        <select id="boxAtencion" class="w-full border rounded p-2 text-sm">
+                            <option>-- Seleccionar --</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-6">
+                <!-- Calendario -->
+                <div class="w-full md:w-1/3">
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <button id="prevMonth" class="text-gray-600 hover:text-gray-800">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <h2 id="currentMonth" class="text-lg font-medium">ENERO 2025</h2>
+                            <button id="nextMonth" class="text-gray-600 hover:text-gray-800">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-7 mb-2">
+                            <div class="calendar-header text-center text-sm font-medium text-gray-600">LU</div>
+                            <div class="calendar-header text-center text-sm font-medium text-gray-600">MA</div>
+                            <div class="calendar-header text-center text-sm font-medium text-gray-600">MI</div>
+                            <div class="calendar-header text-center text-sm font-medium text-gray-600">JU</div>
+                            <div class="calendar-header text-center text-sm font-medium text-gray-600">VI</div>
+                            <div class="calendar-header text-center text-sm font-medium text-gray-600">SA</div>
+                            <div class="calendar-header text-center text-sm font-medium text-gray-600">DO</div>
+                        </div>
+                        <div id="calendar-days" class="grid grid-cols-7">
+                            <!-- Los días se generarán dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Horarios Disponibles -->
+                <div class="w-full md:w-2/3">
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="p-4 border-b">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h3 id="selectedDate" class="text-lg font-medium">DÍA JUEVES 09</h3>
+                                    <p class="text-sm text-gray-500">Sobre cupos disponibles: <span
+                                            id="cuposDisponibles">5</span></p>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button class="px-4 py-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">
+                                        Lista de espera
+                                    </button>
+                                    <button
+                                        class="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200">
+                                        Exportar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex items-center mb-4">
+                                <input type="checkbox" id="mostrarTodo" class="mr-2">
+                                <label for="mostrarTodo" class="text-sm text-gray-600">Mostrar todo</label>
+                            </div>
+                            <div id="horas-disponibles" class="space-y-1">
+                                <!-- Las horas se generarán dinámicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Pacientes -->
+            <div class="mt-6 bg-white rounded-lg shadow overflow-x-auto">
+                <table class="min-w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Hora</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Identificador
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Profesional</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Consulta</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Minutos</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Origen</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Primera</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Previsión</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Convenio</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-pacientes" class="bg-white divide-y divide-gray-200">
+                        <!-- Los pacientes se generarán dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="agenda.js"></script>
+</body>
+
+</html>
