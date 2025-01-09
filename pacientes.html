@@ -26,6 +26,21 @@
         }
     </script>
     <style>
+        /* Estilos para el canvas como en index.html */
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            background: #f8fafc;
+        }
+
+        /* Contenido principal por encima del canvas */
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
         /* Estilos para el modal y animaciones */
         .modal-enter {
             animation: modalEnter 0.3s ease-out;
@@ -82,74 +97,81 @@
 </head>
 
 <body class="bg-apple-gray">
-    <!-- Header -->
-    <header class="bg-white/80 backdrop-blur-md fixed w-full top-0 z-10 border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 py-4">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center space-x-4">
-                    <a href="index.html" class="text-gray-600 hover:text-gray-800 transition">
-                        <i class="fas fa-arrow-left"></i>
-                    </a>
-                    <h1 class="text-2xl font-light text-gray-800">Lista de Pacientes</h1>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <button
-                        class="px-4 py-2 bg-apple-blue text-white rounded-full hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105 text-sm font-medium">
-                        <i class="fas fa-plus mr-2"></i> Nuevo Paciente
-                    </button>
-                </div>
-            </div>
-        </div>
-    </header>
+    <!-- Canvas de fondo -->
+    <canvas id="nokey"></canvas>
 
-    <!-- Main Content -->
-    <main class="mt-24 max-w-7xl mx-auto px-4 py-6">
-        <!-- Search and Filters -->
-        <div class="mb-8">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div class="relative flex-1">
-                    <input type="text" placeholder="Buscar pacientes..."
-                        class="w-full pl-10 pr-4 py-2 bg-white rounded-xl border-none shadow-sm focus:ring-2 focus:ring-apple-blue">
-                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                </div>
-                <div class="flex space-x-4">
-                    <select
-                        class="bg-white rounded-xl border-none shadow-sm px-4 py-2 focus:ring-2 focus:ring-apple-blue">
-                        <option>Todos los estados</option>
-                        <option>En espera</option>
-                        <option>En consulta</option>
-                        <option>Atendido</option>
-                    </select>
-                    <button
-                        class="px-4 py-2 bg-white rounded-xl shadow-sm hover:shadow transition text-gray-600 hover:text-gray-800">
-                        <i class="fas fa-filter"></i>
-                    </button>
+    <!-- Wrapper para el contenido -->
+    <div class="content-wrapper">
+        <!-- Header -->
+        <header class="bg-white/80 backdrop-blur-md fixed w-full top-0 z-10 border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 py-4">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center space-x-4">
+                        <a href="index.html" class="text-gray-600 hover:text-gray-800 transition">
+                            <i class="fas fa-arrow-left"></i>
+                        </a>
+                        <h1 class="text-2xl font-light text-gray-800">Lista de Pacientes</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button
+                            class="px-4 py-2 bg-apple-blue text-white rounded-full hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105 text-sm font-medium">
+                            <i class="fas fa-plus mr-2"></i> Nuevo Paciente
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </header>
 
-        <!-- Patient List -->
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">Paciente</th>
-                            <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">Hora</th>
-                            <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">Estado</th>
-                            <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">Tipo</th>
-                            <th class="px-6 py-4 text-right text-sm font-medium text-gray-500">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        <!-- Los pacientes se cargarán dinámicamente aquí -->
-                    </tbody>
-                </table>
+        <!-- Main Content -->
+        <main class="mt-24 max-w-7xl mx-auto px-4 py-6">
+            <!-- Search and Filters -->
+            <div class="mb-8">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div class="relative flex-1">
+                        <input type="text" placeholder="Buscar pacientes..."
+                            class="w-full pl-10 pr-4 py-2 bg-white rounded-xl border-none shadow-sm focus:ring-2 focus:ring-apple-blue">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                    <div class="flex space-x-4">
+                        <select
+                            class="bg-white rounded-xl border-none shadow-sm px-4 py-2 focus:ring-2 focus:ring-apple-blue">
+                            <option>Todos los estados</option>
+                            <option>En espera</option>
+                            <option>En consulta</option>
+                            <option>Atendido</option>
+                        </select>
+                        <button
+                            class="px-4 py-2 bg-white rounded-xl shadow-sm hover:shadow transition text-gray-600 hover:text-gray-800">
+                            <i class="fas fa-filter"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
-        </div>
-    </main>
+
+            <!-- Patient List -->
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">Paciente</th>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">Hora</th>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">Estado</th>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">Tipo</th>
+                                <th class="px-6 py-4 text-right text-sm font-medium text-gray-500">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <!-- Los pacientes se cargarán dinámicamente aquí -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
 
     <script src="pacientes.js"></script>
+    <script src="canvas.js"></script>
 </body>
 
 </html>

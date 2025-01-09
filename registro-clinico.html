@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Clínico - Sistema Clínico</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['"Open Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        'apple-gray': '#f5f5f7',
+                        'apple-blue': '#2997ff',
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            background: #f8fafc;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body class="bg-apple-gray">
+    <canvas id="nokey"></canvas>
+
+    <div class="content-wrapper">
+        <!-- Header -->
+        <header class="bg-white/80 backdrop-blur-md fixed w-full top-0 z-10 border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 py-4">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center space-x-4">
+                        <a href="pacientes.html" class="text-gray-600 hover:text-gray-800 transition">
+                            <i class="fas fa-arrow-left"></i>
+                        </a>
+                        <h1 class="text-2xl font-light text-gray-800">Registro Clínico</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button id="guardarRegistro"
+                            class="px-4 py-2 bg-apple-blue text-white rounded-lg hover:bg-blue-600 transition-colors text-sm">
+                            <i class="fas fa-save mr-2"></i>Guardar Registro
+                        </button>
+                    </div>
+                </div>
+                <!-- Info del Paciente -->
+                <div class="mt-4 flex items-center space-x-6">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-medium"
+                            id="avatarPaciente">
+                            <!-- Las iniciales se insertarán aquí -->
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-medium text-gray-800" id="nombrePaciente"></h2>
+                            <p class="text-sm text-gray-500" id="rutPaciente"></p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-calendar text-gray-400"></i>
+                        <span class="text-sm text-gray-600" id="fechaHora"></span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenido Principal -->
+        <main class="mt-32 min-h-screen px-4 py-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 h-full">
+                <!-- Columna 1: Anamnesis y Diagnóstico -->
+                <div class="grid grid-rows-2 gap-6 h-[calc(100vh-12rem)]">
+                    <!-- Anamnesis -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full">
+                        <div class="flex items-center mb-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="p-2 bg-blue-50 rounded-lg">
+                                    <i class="fas fa-comments text-blue-500"></i>
+                                </div>
+                                <h3 class="font-medium text-gray-700">Anamnesis</h3>
+                            </div>
+                        </div>
+                        <textarea id="anamnesis"
+                            class="w-full h-[calc(100%-4rem)] p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-apple-blue focus:border-apple-blue resize-none"
+                            placeholder="Registre la anamnesis del paciente..."></textarea>
+                    </div>
+
+                    <!-- Diagnóstico -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full">
+                        <div class="flex items-center mb-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="p-2 bg-red-50 rounded-lg">
+                                    <i class="fas fa-notes-medical text-red-500"></i>
+                                </div>
+                                <h3 class="font-medium text-gray-700">Diagnóstico</h3>
+                            </div>
+                        </div>
+                        <textarea id="diagnostico"
+                            class="w-full h-[calc(100%-4rem)] p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-apple-blue focus:border-apple-blue resize-none"
+                            placeholder="Registre el diagnóstico del paciente..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Columna 2: Examen Físico e Indicaciones -->
+                <div class="grid grid-rows-2 gap-6 h-[calc(100vh-12rem)]">
+                    <!-- Examen Físico -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full">
+                        <div class="flex items-center mb-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="p-2 bg-green-50 rounded-lg">
+                                    <i class="fas fa-stethoscope text-green-500"></i>
+                                </div>
+                                <h3 class="font-medium text-gray-700">Examen Físico</h3>
+                            </div>
+                        </div>
+                        <textarea id="examenFisico"
+                            class="w-full h-[calc(100%-4rem)] p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-apple-blue focus:border-apple-blue resize-none"
+                            placeholder="Registre el examen físico del paciente..."></textarea>
+                    </div>
+
+                    <!-- Indicaciones -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full">
+                        <div class="flex items-center mb-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="p-2 bg-yellow-50 rounded-lg">
+                                    <i class="fas fa-list-ul text-yellow-500"></i>
+                                </div>
+                                <h3 class="font-medium text-gray-700">Indicaciones</h3>
+                            </div>
+                        </div>
+                        <textarea id="indicaciones"
+                            class="w-full h-[calc(100%-4rem)] p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-apple-blue focus:border-apple-blue resize-none"
+                            placeholder="Registre las indicaciones para el paciente..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Columna 3: Exámenes y Receta -->
+                <div class="grid grid-rows-2 gap-6 h-[calc(100vh-12rem)]">
+                    <!-- Exámenes/Imágenes -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="p-2 bg-purple-50 rounded-lg">
+                                    <i class="fas fa-flask text-purple-500"></i>
+                                </div>
+                                <h3 class="font-medium text-gray-700">Exámenes/Imágenes</h3>
+                            </div>
+                            <button class="text-apple-blue hover:text-blue-600 text-sm" id="solicitarExamen">
+                                <i class="fas fa-plus mr-1"></i>Solicitar Examen
+                            </button>
+                        </div>
+                        <div class="h-[calc(100%-8rem)] overflow-y-auto">
+                            <div class="space-y-2" id="listaExamenes">
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fas fa-file-medical text-gray-400"></i>
+                                        <span class="text-sm text-gray-600">No hay exámenes solicitados</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Receta -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="p-2 bg-emerald-50 rounded-lg">
+                                    <i class="fas fa-prescription text-emerald-500"></i>
+                                </div>
+                                <h3 class="font-medium text-gray-700">Receta</h3>
+                            </div>
+                            <button class="text-apple-blue hover:text-blue-600 text-sm" id="agregarMedicamento">
+                                <i class="fas fa-plus mr-1"></i>Agregar Medicamento
+                            </button>
+                        </div>
+                        <div class="h-[calc(100%-8rem)] overflow-y-auto">
+                            <div class="space-y-2" id="listaMedicamentos">
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fas fa-pills text-gray-400"></i>
+                                        <span class="text-sm text-gray-600">No hay medicamentos recetados</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="registro-clinico.js"></script>
+    <script src="canvas.js"></script>
+</body>
+
+</html>
