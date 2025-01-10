@@ -1,15 +1,19 @@
 import { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default function Calendar({ currentDate, selectedDate, onDateSelect }) {
+    console.log('Renderizando Calendar'); // Para debug
     const [calendarDays, setCalendarDays] = useState([]);
+    const [displayDate, setDisplayDate] = useState(currentDate);
 
     useEffect(() => {
+        console.log('Calendar useEffect - Generando calendario'); // Para debug
         generateCalendar();
-    }, [currentDate]);
+    }, [displayDate, selectedDate]);
 
     const generateCalendar = () => {
-        const year = currentDate.getFullYear();
-        const month = currentDate.getMonth();
+        const year = displayDate.getFullYear();
+        const month = displayDate.getMonth();
 
         // Primer día del mes
         const firstDay = new Date(year, month, 1);
@@ -65,8 +69,36 @@ export default function Calendar({ currentDate, selectedDate, onDateSelect }) {
             date1.getFullYear() === date2.getFullYear();
     };
 
+    const changeMonth = (increment) => {
+        console.log('Cambiando mes:', increment); // Para debug
+        const newDate = new Date(displayDate);
+        newDate.setMonth(newDate.getMonth() + increment);
+        setDisplayDate(newDate);
+    };
+
     return (
         <div className="calendar">
+            {/* Cabecera del calendario */}
+            <div className="flex items-center justify-between mb-4">
+                <button
+                    onClick={() => changeMonth(-1)}
+                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                    type="button"
+                >
+                    <FontAwesomeIcon icon="chevron-left" className="text-gray-600" />
+                </button>
+                <h3 className="text-lg font-medium text-gray-900">
+                    {displayDate.toLocaleString('es', { month: 'long', year: 'numeric' }).toUpperCase()}
+                </h3>
+                <button
+                    onClick={() => changeMonth(1)}
+                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                    type="button"
+                >
+                    <FontAwesomeIcon icon="chevron-right" className="text-gray-600" />
+                </button>
+            </div>
+
             {/* Días de la semana */}
             <div className="grid grid-cols-7 gap-1 mb-2">
                 {['L', 'M', 'M', 'J', 'V', 'S', 'D'].map((day, index) => (
@@ -87,11 +119,11 @@ export default function Calendar({ currentDate, selectedDate, onDateSelect }) {
                         onClick={() => onDateSelect(day.date)}
                         className={`
                             h-8 flex items-center justify-center text-sm rounded-lg transition-colors
-                            ${day.isCurrentMonth ? 'hover:bg-gray-100' : 'text-gray-400'}
+                            ${!day.isCurrentMonth ? 'text-gray-400' : 'hover:bg-gray-100'}
                             ${day.isSelected ? 'bg-blue-500 text-white hover:bg-blue-600' : ''}
                             ${day.isToday && !day.isSelected ? 'bg-blue-100 text-blue-600' : ''}
                         `}
-                        disabled={!day.isCurrentMonth}
+                        type="button"
                     >
                         {day.date.getDate()}
                     </button>

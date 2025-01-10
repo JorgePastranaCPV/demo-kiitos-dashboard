@@ -14,7 +14,18 @@ import {
   faClock,
   faChartPie,
   faSmile,
-  faArrowRight
+  faArrowRight,
+  faCalendarPlus,
+  faChevronDown,
+  faChevronLeft,
+  faChevronRight,
+  faCalendarTimes,
+  faCircle,
+  faEdit,
+  faTrashAlt,
+  faDownload,
+  faListAlt,
+  faFileExport
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -26,7 +37,18 @@ library.add(
   faClock,
   faChartPie,
   faSmile,
-  faArrowRight
+  faArrowRight,
+  faCalendarPlus,
+  faChevronDown,
+  faChevronLeft,
+  faChevronRight,
+  faCalendarTimes,
+  faCircle,
+  faEdit,
+  faTrashAlt,
+  faDownload,
+  faListAlt,
+  faFileExport
 );
 
 ReactDOM.createRoot(document.getElementById('root')).render(
