@@ -17,17 +17,17 @@ const cards = [
         color: 'bg-indigo-500'
     },
     {
+        title: 'Profesionales',
+        description: 'Administre profesionales y sus horarios',
+        icon: 'user-clock',
+        link: '/profesionales',
+        color: 'bg-emerald-500'
+    },
+    {
         title: 'Productividad',
         description: 'Analice su rendimiento y estadísticas',
         icon: 'chart-line',
         link: '/productividad',
-        color: 'bg-emerald-500'
-    },
-    {
-        title: 'Buscador Avanzado',
-        description: 'Búsqueda detallada de historiales médicos',
-        icon: 'search',
-        link: '/buscar',
         color: 'bg-orange-500'
     }
 ];

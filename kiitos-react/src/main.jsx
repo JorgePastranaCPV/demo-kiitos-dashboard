@@ -25,7 +25,10 @@ import {
   faTrashAlt,
   faDownload,
   faListAlt,
-  faFileExport
+  faFileExport,
+  faUserMd,
+  faCheck,
+  faTimes
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -48,7 +51,10 @@ library.add(
   faTrashAlt,
   faDownload,
   faListAlt,
-  faFileExport
+  faFileExport,
+  faUserMd,
+  faCheck,
+  faTimes
 );
 
 ReactDOM.createRoot(document.getElementById('root')).render(

@@ -5,7 +5,14 @@ import Calendar from '../components/Calendar';
 function Agenda() {
     const [currentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [horarios, setHorarios] = useState({});
+    const [showModal, setShowModal] = useState(false);
+    const [horaSeleccionada, setHoraSeleccionada] = useState(null);
+    const [pacienteData, setPacienteData] = useState({
+        nombre: '',
+        rut: '',
+        prevision: 'FONASA'
+    });
+
     const [filtros, setFiltros] = useState({
         medioAtencion: '',
         profesional: '',
@@ -13,94 +20,73 @@ function Agenda() {
         sucursal: '',
         mostrarTodo: false
     });
-    const [profesionales, setProfesionales] = useState({});
+
     const [citas, setCitas] = useState([]);
 
-    useEffect(() => {
-        // Cargar profesionales guardados o usar datos predeterminados
-        const savedProfesionales = localStorage.getItem('profesionales');
-        if (savedProfesionales) {
-            setProfesionales(JSON.parse(savedProfesionales));
-        } else {
-            const defaultProfesionales = {
-                'Dr. Juan Pérez': {
-                    inicio: '08:00',
-                    fin: '14:00',
-                    dias: [1, 2, 3, 4, 5],
-                    especialidad: 'Medicina General',
-                    sucursal: 'Clínica San Carlos'
-                },
-                'Dra. María González': {
-                    inicio: '14:00',
-                    fin: '19:00',
-                    dias: [1, 3, 5],
-                    especialidad: 'Pediatría',
-                    sucursal: 'Centro Médico Las Condes'
-                },
-                'Dr. Carlos Rodríguez': {
-                    inicio: '08:00',
-                    fin: '13:00',
-                    dias: [2, 4],
-                    especialidad: 'Cardiología',
-                    sucursal: 'Hospital del Valle'
-                }
-            };
-            setProfesionales(defaultProfesionales);
-            localStorage.setItem('profesionales', JSON.stringify(defaultProfesionales));
+    // Horarios fijos
+    const horariosFijos = {
+        '08:00': { estado: 'disponible' },
+        '08:30': { estado: 'disponible' },
+        '09:00': { estado: 'disponible' },
+        '09:30': { estado: 'disponible' },
+        '10:00': { estado: 'disponible' },
+        '10:30': { estado: 'disponible' },
+        '11:00': { estado: 'disponible' },
+        '11:30': { estado: 'disponible' },
+        '12:00': { estado: 'disponible' },
+        '12:30': { estado: 'disponible' },
+        '13:00': { estado: 'disponible' },
+        '13:30': { estado: 'disponible' },
+        '14:00': { estado: 'disponible' }
+    };
+
+    // Profesionales fijos
+    const profesionalesFijos = {
+        'Dr. Juan Pérez': {
+            dias: [1, 2, 3, 4, 5], // Lunes a Viernes
+            especialidad: 'Medicina General',
+            sucursal: 'Clínica San Carlos'
+        },
+        'Dra. María González': {
+            dias: [1, 3, 5], // Lunes, Miércoles, Viernes
+            especialidad: 'Pediatría',
+            sucursal: 'Centro Médico Las Condes'
+        },
+        'Dr. Carlos Rodríguez': {
+            dias: [2, 4], // Martes, Jueves
+            especialidad: 'Cardiología',
+            sucursal: 'Hospital del Valle'
         }
-    }, []);
+    };
+
+    const [horarios, setHorarios] = useState(horariosFijos);
+    const [profesionales] = useState(profesionalesFijos);
 
     useEffect(() => {
-        cargarHorarios();
-        cargarCitas();
-    }, [selectedDate, filtros.profesional]);
-
-    const cargarHorarios = () => {
-        if (!filtros.profesional) return;
-
-        const fecha = selectedDate.toISOString().split('T')[0];
-        const key = `horarios_${fecha}_${filtros.profesional}`;
-        const savedHorarios = localStorage.getItem(key);
-
-        if (savedHorarios) {
-            setHorarios(JSON.parse(savedHorarios));
-        } else {
-            const nuevosHorarios = {};
+        if (filtros.profesional) {
             const profesional = profesionales[filtros.profesional];
-            if (profesional) {
-                const [horaInicio] = profesional.inicio.split(':').map(Number);
-                const [horaFin] = profesional.fin.split(':').map(Number);
+            const diaSeleccionado = selectedDate.getDay();
+            const diaAjustado = diaSeleccionado === 0 ? 7 : diaSeleccionado;
 
-                for (let hora = horaInicio; hora < horaFin; hora++) {
-                    for (let minuto = 0; minuto < 60; minuto += 15) {
-                        const horaStr = `${hora.toString().padStart(2, '0')}:${minuto.toString().padStart(2, '0')}`;
-                        nuevosHorarios[horaStr] = { estado: "disponible" };
-                    }
-                }
+            // Si el profesional atiende este día, mostrar horarios
+            if (profesional.dias.includes(diaAjustado)) {
+                setHorarios(horariosFijos);
+            } else {
+                setHorarios({});
             }
-            setHorarios(nuevosHorarios);
-            localStorage.setItem(key, JSON.stringify(nuevosHorarios));
+
+            // Cargar citas existentes
+            const todasLasCitas = JSON.parse(localStorage.getItem('citas') || '[]');
+            const citasDelDia = todasLasCitas.filter(c =>
+                c.fecha === selectedDate.toISOString().split('T')[0] &&
+                c.profesional === filtros.profesional
+            );
+            setCitas(citasDelDia);
+        } else {
+            setHorarios({});
+            setCitas([]);
         }
-    };
-
-    const cargarCitas = () => {
-        const fecha = selectedDate.toISOString().split('T')[0];
-        const todasLasCitas = JSON.parse(localStorage.getItem('citas') || '[]');
-        const citasDelDia = todasLasCitas.filter(c =>
-            c.fecha === fecha &&
-            (!filtros.profesional || c.profesional === filtros.profesional)
-        );
-        setCitas(citasDelDia);
-
-        // Actualizar estado de horarios
-        const nuevosHorarios = { ...horarios };
-        citasDelDia.forEach(cita => {
-            if (nuevosHorarios[cita.hora]) {
-                nuevosHorarios[cita.hora].estado = 'ocupado';
-            }
-        });
-        setHorarios(nuevosHorarios);
-    };
+    }, [selectedDate, filtros.profesional]);
 
     const handleDateSelect = (date) => {
         setSelectedDate(date);
@@ -110,37 +96,35 @@ function Agenda() {
         if (!filtros.profesional || !profesionales[filtros.profesional]) return false;
 
         const profesional = profesionales[filtros.profesional];
-        const diaSeleccionado = selectedDate.getDay() || 7; // Convertir 0 (domingo) a 7
+        const diaSeleccionado = selectedDate.getDay();
+        const diaAjustado = diaSeleccionado === 0 ? 7 : diaSeleccionado;
 
-        return profesional.dias.includes(diaSeleccionado);
+        return profesional.dias.includes(diaAjustado);
     };
 
-    const reservarHora = (hora) => {
+    const handleReservarHora = (hora) => {
         if (!filtros.profesional || !filtros.especialidad || !filtros.sucursal) {
             alert('Por favor seleccione todos los campos requeridos');
             return;
         }
+        setHoraSeleccionada(hora);
+        setShowModal(true);
+    };
 
-        const nombre = prompt('Nombre del paciente:');
-        if (!nombre) return;
-
-        const rut = prompt('RUT del paciente:');
-        if (!rut) return;
-
-        const prevision = prompt('Previsión (FONASA/ISAPRE/PARTICULAR):');
-        if (!prevision) return;
+    const handleSubmitReserva = (e) => {
+        e.preventDefault();
 
         const nuevaCita = {
             id: Date.now(),
             fecha: selectedDate.toISOString().split('T')[0],
-            hora,
-            nombre,
-            rut,
-            prevision,
+            hora: horaSeleccionada,
+            nombre: pacienteData.nombre,
+            rut: pacienteData.rut,
+            prevision: pacienteData.prevision,
             estado: 'En espera',
             profesional: filtros.profesional,
             consulta: filtros.especialidad,
-            duracion: '15',
+            duracion: '30',
             medioAtencion: filtros.medioAtencion,
             sucursal: filtros.sucursal
         };
@@ -149,15 +133,21 @@ function Agenda() {
         todasLasCitas.push(nuevaCita);
         localStorage.setItem('citas', JSON.stringify(todasLasCitas));
 
-        // Actualizar horarios
-        const nuevosHorarios = { ...horarios };
-        nuevosHorarios[hora].estado = 'ocupado';
-        setHorarios(nuevosHorarios);
+        // Recargar citas
+        const citasDelDia = todasLasCitas.filter(c =>
+            c.fecha === nuevaCita.fecha &&
+            c.profesional === filtros.profesional
+        );
+        setCitas(citasDelDia);
 
-        const key = `horarios_${nuevaCita.fecha}_${filtros.profesional}`;
-        localStorage.setItem(key, JSON.stringify(nuevosHorarios));
-
-        cargarCitas();
+        // Limpiar y cerrar modal
+        setPacienteData({
+            nombre: '',
+            rut: '',
+            prevision: 'FONASA'
+        });
+        setShowModal(false);
+        setHoraSeleccionada(null);
     };
 
     const getEstadoClass = (estado) => {
@@ -168,6 +158,66 @@ function Agenda() {
             'Cancelado': 'bg-red-100 text-red-800'
         };
         return clases[estado] || 'bg-gray-100 text-gray-800';
+    };
+
+    const HORARIOS_DISPONIBLES = [
+        '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
+        '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00'
+    ];
+
+    const renderHorarios = () => {
+        if (!filtros.profesional) {
+            return (
+                <p className="col-span-full text-center text-gray-500">
+                    Seleccione un profesional para ver los horarios disponibles
+                </p>
+            );
+        }
+
+        const profesional = profesionales[filtros.profesional];
+        const diaSeleccionado = selectedDate.getDay();
+        const diaAjustado = diaSeleccionado === 0 ? 7 : diaSeleccionado;
+        const disponible = profesional.dias.includes(diaAjustado);
+
+        if (!disponible) {
+            return (
+                <p className="col-span-full text-center text-gray-500">
+                    El profesional no atiende este día
+                </p>
+            );
+        }
+
+        return HORARIOS_DISPONIBLES.map(hora => {
+            const citaActual = citas.find(c => c.hora === hora);
+            const estado = citaActual ? 'ocupado' : 'disponible';
+
+            if (estado === 'ocupado' && !filtros.mostrarTodo) return null;
+
+            return (
+                <button
+                    key={hora}
+                    onClick={() => estado === 'disponible' && handleReservarHora(hora)}
+                    className={`p-4 rounded-xl ${estado === 'ocupado'
+                        ? 'bg-gray-100 cursor-not-allowed'
+                        : 'bg-white border border-gray-200 shadow-sm hover:shadow-md hover:border-blue-300'
+                        } transition-all duration-300`}
+                    disabled={estado === 'ocupado'}
+                >
+                    <div className="flex items-center justify-between">
+                        <span className="text-lg font-medium text-gray-900">{hora}</span>
+                        <FontAwesomeIcon
+                            icon={estado === 'ocupado' ? 'calendar-times' : 'calendar-plus'}
+                            className={estado === 'ocupado' ? 'text-red-500' : 'text-green-500'}
+                        />
+                    </div>
+                    {citaActual && (
+                        <p className="text-sm text-gray-500 mt-1">
+                            {citaActual.nombre}
+                        </p>
+                    )}
+                </button>
+            );
+        });
     };
 
     return (
@@ -263,7 +313,9 @@ function Agenda() {
                                         DÍA {selectedDate.toLocaleString('es', { weekday: 'long' }).toUpperCase()} {selectedDate.getDate()}
                                     </h3>
                                     <p className="text-sm text-gray-500">
-                                        Horas disponibles: {Object.values(horarios).filter(h => h.estado === 'disponible').length}
+                                        Horas disponibles: {Object.entries(horarios).filter(([hora, info]) =>
+                                            info.estado === 'disponible' && isHorarioDisponible(hora)
+                                        ).length}
                                     </p>
                                 </div>
                             </div>
@@ -272,6 +324,10 @@ function Agenda() {
                             {!filtros.profesional ? (
                                 <p className="text-gray-600">
                                     Seleccione un profesional para ver las horas disponibles.
+                                </p>
+                            ) : !isHorarioDisponible('00:00') ? (
+                                <p className="text-gray-600">
+                                    El profesional no atiende este día.
                                 </p>
                             ) : (
                                 <>
@@ -288,38 +344,14 @@ function Agenda() {
                                         </label>
                                     </div>
 
+                                    {console.log('Estado antes de renderizar:', {
+                                        horarios,
+                                        totalHorarios: Object.keys(horarios).length,
+                                        horariosDisponibles: Object.entries(horarios).filter(([hora]) => isHorarioDisponible(hora)).length
+                                    })}
+
                                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                                        {Object.entries(horarios).map(([hora, info]) => {
-                                            if (!isHorarioDisponible(hora)) return null;
-                                            if (info.estado === 'ocupado' && !filtros.mostrarTodo) return null;
-
-                                            const citaActual = citas.find(c => c.hora === hora);
-
-                                            return (
-                                                <button
-                                                    key={hora}
-                                                    onClick={() => info.estado === 'disponible' && reservarHora(hora)}
-                                                    className={`p-4 rounded-xl ${info.estado === 'ocupado'
-                                                        ? 'bg-gray-100 cursor-not-allowed'
-                                                        : 'bg-white shadow-sm hover:shadow-md'
-                                                        } transition-all duration-300`}
-                                                    disabled={info.estado === 'ocupado'}
-                                                >
-                                                    <div className="flex items-center justify-between">
-                                                        <span className="text-lg font-medium text-gray-900">{hora}</span>
-                                                        <FontAwesomeIcon
-                                                            icon={info.estado === 'ocupado' ? 'calendar-times' : 'calendar-plus'}
-                                                            className={info.estado === 'ocupado' ? 'text-red-500' : 'text-green-500'}
-                                                        />
-                                                    </div>
-                                                    {citaActual && (
-                                                        <p className="text-sm text-gray-500 mt-1">
-                                                            {citaActual.nombre}
-                                                        </p>
-                                                    )}
-                                                </button>
-                                            );
-                                        })}
+                                        {renderHorarios()}
                                     </div>
                                 </>
                             )}
@@ -376,6 +408,85 @@ function Agenda() {
                     </table>
                 </div>
             </div>
+
+            {/* Modal de Reserva */}
+            {showModal && (
+                <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+                    <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-xl bg-white">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-lg font-medium text-gray-900">Reservar Hora Médica</h3>
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className="text-gray-400 hover:text-gray-500"
+                            >
+                                <FontAwesomeIcon icon="times" />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleSubmitReserva} className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Nombre del Paciente
+                                </label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={pacienteData.nombre}
+                                    onChange={(e) => setPacienteData({ ...pacienteData, nombre: e.target.value })}
+                                    className="w-full p-2 border rounded-lg"
+                                    placeholder="Nombre completo"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    RUT
+                                </label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={pacienteData.rut}
+                                    onChange={(e) => setPacienteData({ ...pacienteData, rut: e.target.value })}
+                                    className="w-full p-2 border rounded-lg"
+                                    placeholder="12.345.678-9"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Previsión
+                                </label>
+                                <select
+                                    required
+                                    value={pacienteData.prevision}
+                                    onChange={(e) => setPacienteData({ ...pacienteData, prevision: e.target.value })}
+                                    className="w-full p-2 border rounded-lg"
+                                >
+                                    <option value="FONASA">FONASA</option>
+                                    <option value="ISAPRE">ISAPRE</option>
+                                    <option value="PARTICULAR">PARTICULAR</option>
+                                </select>
+                            </div>
+
+                            <div className="flex justify-end space-x-2 pt-4">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowModal(false)}
+                                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                                >
+                                    Confirmar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
