@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-50;
+  }
+}
+
+@layer components {
+  .custom-bg {
+    @apply relative min-h-screen bg-gray-50;
+  }
+
+  .header {
+    @apply fixed top-0 left-0 right-0 bg-white shadow-sm z-50;
+  }
+
+  .logo {
+    @apply h-8 w-auto;
+  }
+
+  .nav-link {
+    @apply text-gray-600 hover:text-gray-900 transition-colors duration-200;
+  }
+
+  .card {
+    @apply bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300;
+  }
+
+  .icon-blue {
+    @apply text-blue-500;
+  }
+
+  .icon-purple {
+    @apply text-indigo-500;
+  }
+
+  .icon-green {
+    @apply text-emerald-500;
+  }
+
+  .icon-orange {
+    @apply text-orange-500;
+  }
+
+  .stat-card {
+    @apply bg-white rounded-lg shadow-sm p-4;
+  }
+}
